@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:descendantFocusability="beforeDescendants"
+    android:focusableInTouchMode="true"
+    tools:context="com.goldeggm.user.goldeggm.RegisterActivity">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#D7D7D7"
+        android:orientation="vertical"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="0dp"
+        tools:ignore="MissingConstraints">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_gravity="center"
+                android:background="#FFC000"
+                android:text="황금알M"
+                android:textColor="#333333"
+                android:textSize="20dp" />
+
+            <TableLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="30sp"
+                android:layout_marginTop="20dp"
+                android:stretchColumns="*"
+                android:background="@color/textBg"
+                android:layout_gravity="center">
+
+                <TableRow>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginVertical="10sp"
+                        android:text="아이디"
+                        android:gravity="center_vertical"
+                        android:padding="10dp"
+                        android:textColor="#333333"
+                        android:textColorHint="#ACACAC" />
+
+                    <EditText
+                        android:id="@+id/idText"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginVertical="10sp"
+                        android:hint="영어 + 숫자, 최소 6자리"
+                        android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+                        android:padding="10dp"
+                        android:background="@android:color/transparent"
+                        android:textSize="14sp"
+                        android:textColor="#333333"
+                        android:textColorHint="#ACACAC" />
+
+                </TableRow>
+                <TableRow>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginVertical="10sp"
+                        android:text="비밀번호"
+                        android:gravity="center_vertical"
+                        android:padding="10dp"
+                        android:textColor="#333333"
+                        android:textColorHint="#ACACAC" />
+
+                    <EditText
+                        android:id="@+id/passwordText"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginVertical="10sp"
+                        android:hint="비밀번호는 최소 6자리"
+                        android:inputType="textPassword"
+                        android:padding="10dp"
+                        android:background="@android:color/transparent"
+                        android:textSize="14sp"
+                        android:textColor="#333333"
+                        android:textColorHint="#ACACAC" />
+                </TableRow>
+                <TableRow>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginVertical="10sp"
+                        android:text="비밀번호 재확인"
+                        android:gravity="center_vertical"
+                        android:padding="10dp"
+                        android:textColor="#333333"
+                        android:textColorHint="#ACACAC" />
+
+                    <EditText
+                        android:id="@+id/confirm_pwd"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginVertical="10sp"
+                        android:hint="비밀번호 재확인"
+                        android:inputType="textPassword"
+                        android:padding="10dp"
+                        android:background="@android:color/transparent"
+                        android:textSize="14sp"
+                        android:textColor="#333333"
+                        android:textColorHint="#ACACAC" />
+                </TableRow>
+                <TableRow>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginVertical="10sp"
+                        android:text="전화번호"
+                        android:gravity="center_vertical"
+                        android:padding="10dp"
+                        android:textColor="#333333"
+                        android:textColorHint="#ACACAC" />
+
+                    <EditText
+                        android:id="@+id/phoneText"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginVertical="10sp"
+                        android:hint="전화번호"
+                        android:padding="10dp"
+                        android:background="@android:color/transparent"
+                        android:textSize="14sp"
+                        android:textColor="#333333"
+                        android:textColorHint="#ACACAC" />
+                </TableRow>
+                <TableRow>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginVertical="10sp"
+                        android:text="전화번호"
+                        android:gravity="center_vertical"
+                        android:padding="10dp"
+                        android:textColor="#333333"
+                        android:textColorHint="#ACACAC" />
+
+                    <EditText
+                        android:id="@+id/emailText"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginVertical="10sp"
+                        android:hint="이메일"
+                        android:padding="10dp"
+                        android:background="@android:color/transparent"
+                        android:textSize="14sp"
+                        android:textColor="#333333"
+                        android:textColorHint="#ACACAC" />
+                </TableRow>
+            </TableLayout>
+
+            <Button
+                android:id="@+id/sign_up"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginHorizontal="30sp"
+                android:layout_marginTop="10dp"
+                android:background="#91180B"
+                android:text="동의하고 회원가입"
+                android:textColor="#ffffff"
+                android:textSize="20dp"
+                android:textStyle="bold"
+                android:layout_marginBottom="40dp"/>
+        </LinearLayout>
+
+    </ScrollView>
+</LinearLayout>

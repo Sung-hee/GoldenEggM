@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">황금알M</string>
+    <color name="textBg">#FFFFFF</color>
+    <string name="msg">Please enable all permission</string>
 </resources>

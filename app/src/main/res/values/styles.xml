@@ -11,4 +11,13 @@
         <item name="windowNoTitle">true</item>
     </style>
 
+    <style name="RadioYesStyle" parent="@android:style/Widget.CompoundButton">
+        <item name="android:background">@drawable/radio_yes_selector</item>
+        <item name="android:button">@null</item>
+    </style>
+
+    <style name="RadioNoStyle" parent="@android:style/Widget.CompoundButton">
+        <item name="android:background">@drawable/radio_no_selector</item>
+        <item name="android:button">@null</item>
+    </style>
 </resources>
