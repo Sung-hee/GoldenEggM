@@ -2,25 +2,48 @@ package com.goldeggm.user.goldeggm;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
+    boolean doubleBackToExitPressedOnce = false;
+
     private WebView mWebView;
-    private String myUrl = "http://13.125.213.27:3030/users/sign_in"; // 접속 URL (내장HTML의 경우 왼쪽과 같이 쓰고 아니면 걍 URL
+    private String myUrl = "http://13.125.213.27:3000/users/sign_in"; // 접속 URL (내장HTML의 경우 왼쪽과 같이 쓰고 아니면 걍 URL
 
     @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if ((keyCode == KeyEvent.KEYCODE_BACK) && mWebView.canGoBack()) {
-            mWebView.goBack();
-            return true;
+    public void onBackPressed() {
+        if (doubleBackToExitPressedOnce) {
+            super.onBackPressed();
+            return;
         }
-        return super.onKeyDown(keyCode, event);
+        else {
+            if (mWebView.canGoBack()) {
+                mWebView.goBack();
+                return;
+            }
+            else {
+                this.doubleBackToExitPressedOnce = true;
+                Toast.makeText(this, "뒤로 버튼을 한번 더 누르시면 종료됩니다.", Toast.LENGTH_SHORT).show();
+
+                new Handler().postDelayed(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        doubleBackToExitPressedOnce=false;
+                    }
+                }, 2000);
+            }
+        }
+
+
     }
 
     @Override
@@ -32,12 +55,13 @@ public class MainActivity extends AppCompatActivity {
 
         String userId = intent.getStringExtra("userId");
         String userPwd = intent.getStringExtra("userPwd");
+        String userHp = intent.getStringExtra("userHp");
 
         //웹뷰 셋팅
         mWebView = (WebView) findViewById(R.id.webView);
         mWebView.getSettings().setJavaScriptEnabled(true);
 
-        mWebView.loadUrl(myUrl + "?id=" + userId + "&pwd=" + userPwd); // 접속 URL
+        mWebView.loadUrl(myUrl + "?id=" + userId + "&pwd=" + userPwd + "&hp=" + userHp); // 접속 URL
 
         mWebView.setWebChromeClient(new WebChromeClient());
         mWebView.setWebViewClient(new WebViewClientClass());

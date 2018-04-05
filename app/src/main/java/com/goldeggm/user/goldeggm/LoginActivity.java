@@ -31,6 +31,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -40,11 +41,10 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 public class LoginActivity extends AppCompatActivity {
-    private static final int REQUEST_PERMISSION = 10;
-
     private AlertDialog dialog;
     private String JSON_STRING;
-    String id, pwd, json_string, error, results;
+    TelephonyManager tm;
+    public String id, pw, hp, json_string, error, results;
 
     public SharedPreferences setting;
     public SharedPreferences.Editor editor;
@@ -63,8 +63,6 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        grantExternalStoragePermission();
-
         findIdPasswordText = (TextView) findViewById(R.id.findIdPasswordText);
 
         existingMemberYButton = (Button) findViewById(R.id.existingMemberYButton);
@@ -77,11 +75,24 @@ public class LoginActivity extends AppCompatActivity {
 
         autoLogin = (CheckBox)  findViewById(R.id.autoLoginCheck);
 
+        tm = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_SMS) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_PHONE_STATE}, 1);
+            return;
+        }
+
+        id = idText.getText().toString();
+        pw = passwordText.getText().toString();
+        hp = tm != null ? tm.getLine1Number() : null;
+
+        new ContactUser().execute();
+
         registerButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
                 Intent registerIntent = new Intent(LoginActivity.this, RegisterActivity.class);
+                registerIntent.putExtra("userHp", hp);
                 LoginActivity.this.startActivity(registerIntent);
             }
         });
@@ -93,18 +104,15 @@ public class LoginActivity extends AppCompatActivity {
         if(setting.getBoolean("autoLogin", false)){
             idText.setText(setting.getString("userId", ""));
             passwordText.setText(setting.getString("userPwd", ""));
+            hp = setting.getString("userHp", "");
             autoLogin.setChecked(true);
         }
 
-        String loginId = setting.getString("inputId", null);
-        String loginPwd = setting.getString("inputPwd", null);
-        String userId = idText.getText().toString();
-        String userPwd = passwordText.getText().toString();
-
         if(autoLogin.isChecked()) {
             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-            intent.putExtra("userId", userId);
-            intent.putExtra("userPwd", userPwd);
+            intent.putExtra("userId", id);
+            intent.putExtra("userPwd", pw);
+            intent.putExtra("userHp", hp);
             LoginActivity.this.startActivity(intent);
             finish();
         }
@@ -113,10 +121,8 @@ public class LoginActivity extends AppCompatActivity {
             loginButton.setOnClickListener(new View.OnClickListener(){
                 @Override
                 public void onClick(View v) {
-
-                    String userId = idText.getText().toString();
-                    String userPwd = passwordText.getText().toString();
-
+                    id = idText.getText().toString();
+                    pw = passwordText.getText().toString();
                     new JsonExpertPage().execute();
                 }
             });
@@ -135,51 +141,6 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-//        switch (requestCode) {
-//            case 1 :
-//                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//                    //권한 허가
-//                    //해당 권한을 사용해서 작업을 진행할 수 있습니다
-//                    Toast.makeText(this,"확인", Toast.LENGTH_SHORT).show();
-//                }
-//                else {
-//                    //권한 거부
-//                    // 사용자가 해당 권한을 거부했을 때 해주어야 할 동작을 수행합니다.
-//                    Toast.makeText(this,"취소", Toast.LENGTH_SHORT).show();
-//                }
-//                return;
-//        }
-
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (Build.VERSION.SDK_INT >= 23) {
-            if(grantResults[0]== PackageManager.PERMISSION_GRANTED){
-                Toast.makeText(this, "External Storage Permission is Grant", Toast.LENGTH_SHORT).show();
-                Log.v("tag","Permission: "+permissions[0]+ "was "+grantResults[0]);
-                //resume tasks needing this permission
-            }
-        }
-    }
-
-    private boolean grantExternalStoragePermission() {
-        if (Build.VERSION.SDK_INT >= 23) {
-            int permissionCheck = checkSelfPermission(Manifest.permission.READ_PHONE_NUMBERS);
-
-            if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
-                return true;
-            }
-            else {
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_PHONE_NUMBERS}, 1);
-                return false;
-            }
-        }
-        else {
-            Toast.makeText(this, "External Storage Permission is Grant", Toast.LENGTH_SHORT).show();
-            return true;
-        }
-    }
-
     public void onRadioButtonClicked(View view) {
         boolean checked = ((RadioButton) view).isChecked();
 
@@ -188,26 +149,51 @@ public class LoginActivity extends AppCompatActivity {
                 if (checked) {
                     idText.setText("");
                     idText.setHint("필명");
-//                    idText.setInputType(InputType.TYPE_CLASS_TEXT);
-//                    idText.setKeyListener(DigitsKeyListener.getInstance(false, true));
                 }
                 break;
             case R.id.existingMemberNButton:
                 if (checked) {
                     idText.setText("");
                     idText.setHint("아이디");
-//                    idText.setKeyListener(DigitsKeyListener.getInstance());
                 }
                     break;
         }
     }
 
+
+    class ContactUser extends AsyncTask <String, Void, String>{
+        @Override
+        protected String doInBackground(String... strings) {
+            String json_url = "http://13.125.147.26/phps/userContact?hp=" + hp;
+
+            try {
+                URL url = new URL(json_url);
+                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+                httpURLConnection.disconnect();
+
+            } catch (MalformedURLException e1) {
+                e1.printStackTrace();
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            try {
+                Log.v("ContactUser", "success");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+    }
+
     class JsonExpertPage extends AsyncTask <String, Void, String>{
         @Override
         protected String doInBackground(String... strings) {
-            String userId = idText.getText().toString();
-            String userPwd = passwordText.getText().toString();
-            String json_url = "http://61.72.187.6/phps/login.php?id=" + userId + "&pwd=" + userPwd;
+            String json_url = "http:/13.125.147.26/phps/login?id=" + id + "&pwd=" + pw + "&hp=" + hp;
 
             try {
                 URL url = new URL(json_url);
@@ -244,9 +230,9 @@ public class LoginActivity extends AppCompatActivity {
                 for(int i=0; i < jsonArray.length(); i++){
                     jsonObject = jsonArray.getJSONObject(i);
                     results = jsonObject.getString("result");
-
-                    String userId = idText.getText().toString();
-                    String userPwd = passwordText.getText().toString();
+                    if (!jsonObject.isNull("error")) {
+                        error = jsonObject.getString("error");
+                    }
 
                     if(results == "true") {
                         AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
@@ -256,11 +242,13 @@ public class LoginActivity extends AppCompatActivity {
 
                         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
 
-                        intent.putExtra("userId", userId);
-                        intent.putExtra("userPwd", userPwd);
+                        intent.putExtra("userId", id);
+                        intent.putExtra("userPwd", pw);
+                        intent.putExtra("userHp", hp);
                         if(autoLogin.isChecked()){
-                            editor.putString("userId", userId);
-                            editor.putString("userPwd", userPwd);
+                            editor.putString("userId", id);
+                            editor.putString("userPwd", pw);
+                            editor.putString("userHp", hp);
                             editor.putBoolean("autoLogin", true);
                             editor.commit();
                         }
@@ -272,15 +260,25 @@ public class LoginActivity extends AppCompatActivity {
                         finish();
                     }
                     else if(results == "false"){
-                        AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
-                        dialog = builder.setMessage("아이디 혹은 비밀번호가 틀렸습니다.")
-                                .setPositiveButton("다시시도", null)
-                                .create();
-                        dialog.show();
+                        if (error == "") {
+                            AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
+                            dialog = builder.setMessage("아이디 혹은 비밀번호가 틀렸습니다.")
+                                    .setPositiveButton("다시시도", null)
+                                    .create();
+                            dialog.show();
+                        }
+                        else if (error.contains("처음")) {
+                            AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
+                            dialog = builder.setMessage(error)
+                                    .setPositiveButton("다시시도", null)
+                                    .create();
+                            dialog.show();
+                        }
 
                         if(autoLogin.isChecked()){
-                            editor.putString("userId", userId);
-                            editor.putString("userPwd", userPwd);
+                            editor.putString("userId", id);
+                            editor.putString("userPwd", pw);
+                            editor.putString("userHp", hp);
                             editor.putBoolean("autoLogin", true);
                             editor.commit();
                         }

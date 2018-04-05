@@ -1,11 +1,13 @@
 package com.goldeggm.user.goldeggm;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -28,9 +30,10 @@ public class RegisterActivity extends AppCompatActivity {
     private AlertDialog dialog;
     private String JSON_STRING;
     String json_string, error, success;
-    String userId, userPwd, user_nick, user_nickPass, user_confirm_pwd, user_phoneText, user_emailText;
     static JSONArray jsonArray;
     static JSONObject jsonObject;
+    private EditText idText, passwordText, confirm_pwd, phoneText, emailText;
+    String userId, userPwd, userConfirmPwd, userPhone, userEmail, userHp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,38 +42,37 @@ public class RegisterActivity extends AppCompatActivity {
 
         Button signUp = (Button) findViewById(R.id.sign_up);
 
-        final EditText idText = (EditText) findViewById(R.id.idText);
-        final EditText passwordText = (EditText) findViewById(R.id.passwordText);
-        final EditText confirm_pwd = (EditText) findViewById(R.id.confirm_pwd);
-        final EditText phoneText = (EditText) findViewById(R.id.phoneText);
-        final EditText emailText = (EditText) findViewById(R.id.emailText);
+        idText = (EditText) findViewById(R.id.idText);
+        passwordText = (EditText) findViewById(R.id.passwordText);
+        confirm_pwd = (EditText) findViewById(R.id.confirm_pwd);
+        phoneText = (EditText) findViewById(R.id.phoneText);
+        emailText = (EditText) findViewById(R.id.emailText);
 
         signUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String userId = idText.getText().toString();
-                String userPwd = passwordText.getText().toString();
-                String user_confirm_pwd = confirm_pwd.getText().toString();
-                String user_phoneText = phoneText.getText().toString();
-                String user_emailText = emailText.getText().toString();
+                userId = idText.getText().toString();
+                userPwd = passwordText.getText().toString();
+                userConfirmPwd = confirm_pwd.getText().toString();
+                userPhone = phoneText.getText().toString();
+                userEmail = emailText.getText().toString();
+                userHp = getIntent().getStringExtra("userHp");
 
                 new JsonExpertPage().execute();
 
                 if (success == "true") {
                     AlertDialog.Builder builder = new AlertDialog.Builder(RegisterActivity.this);
                     dialog = builder.setMessage("로그인에 성공했습니다.")
-                            .setPositiveButton("확인", null)
                             .create();
                     dialog.show();
 
                     Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
-                    intent.putExtra("user_nick", user_nick);
-                    intent.putExtra("user_nickPass", user_nickPass);
                     intent.putExtra("userId", userId);
                     intent.putExtra("userPwd", userPwd);
-                    intent.putExtra("user_confirm_pwd", user_confirm_pwd);
-                    intent.putExtra("user_phoneText", user_phoneText);
-                    intent.putExtra("user_emailText", user_emailText);
+                    intent.putExtra("userConfirmPwd", userConfirmPwd);
+                    intent.putExtra("userPhone", userPhone);
+                    intent.putExtra("userEmail", userEmail);
+                    intent.putExtra("userHp", userHp);
 
                     RegisterActivity.this.startActivity(intent);
 
@@ -85,22 +87,10 @@ public class RegisterActivity extends AppCompatActivity {
         });
     }
     class JsonExpertPage extends AsyncTask<String, Void, String> {
-
-        final EditText idText = (EditText) findViewById(R.id.idText);
-        final EditText passwordText = (EditText) findViewById(R.id.passwordText);
-        final EditText confirm_pwd = (EditText) findViewById(R.id.confirm_pwd);
-        final EditText phoneText = (EditText) findViewById(R.id.phoneText);
-        final EditText emailText = (EditText) findViewById(R.id.emailText);
-
         @Override
         protected String doInBackground(String... strings) {
-            String userId = idText.getText().toString();
-            String userPwd = passwordText.getText().toString();
-            String user_confirm_pwd = confirm_pwd.getText().toString();
-            String user_phoneText = phoneText.getText().toString();
-            String user_emailText = emailText.getText().toString();
 
-            String json_url = "http://61.72.187.6/phps/join.php?nickname=" + user_nick + "&nick_pass=" + user_nickPass + "&id=" + userId + "&pwd=" + userPwd + "&pwd_confirmation=" + user_confirm_pwd + "&phone=" + user_phoneText + "&email=" + user_emailText;
+            String json_url = "http://13.125.147.26/phps/join?id=" + userId + "&pwd=" + userPwd + "&pwd_confirmation=" + userConfirmPwd + "&phone=" + userPhone + "&email=" + userEmail + "&hp=" + userHp;
 
             try {
                 URL url = new URL(json_url);
