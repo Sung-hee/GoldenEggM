@@ -76,14 +76,9 @@ public class LoginActivity extends AppCompatActivity {
         autoLogin = (CheckBox)  findViewById(R.id.autoLoginCheck);
 
         tm = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_SMS) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_PHONE_STATE}, 1);
-            return;
-        }
 
         id = idText.getText().toString();
         pw = passwordText.getText().toString();
-        hp = tm != null ? tm.getLine1Number() : null;
 
         new ContactUser().execute();
 
