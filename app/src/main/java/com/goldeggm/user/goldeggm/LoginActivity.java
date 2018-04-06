@@ -11,6 +11,7 @@ import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
@@ -79,8 +80,7 @@ public class LoginActivity extends AppCompatActivity {
 
         id = idText.getText().toString();
         pw = passwordText.getText().toString();
-
-        new ContactUser().execute();
+        hp = getIntent().getStringExtra("userHp");
 
         registerButton.setOnClickListener(new View.OnClickListener() {
 
@@ -118,6 +118,22 @@ public class LoginActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     id = idText.getText().toString();
                     pw = passwordText.getText().toString();
+                    if (id.equals("") || id.length() == 0) {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
+                        dialog = builder.setMessage("아이디를 입력해주세요.")
+                                .setPositiveButton("확인", null)
+                                .create();
+                        dialog.show();
+                        return;
+                    }
+                    else if (pw.equals("") || pw.length() == 0) {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
+                        dialog = builder.setMessage("비밀번호를 입력해주세요.")
+                                .setPositiveButton("확인", null)
+                                .create();
+                        dialog.show();
+                        return;
+                    }
                     new JsonExpertPage().execute();
                 }
             });
@@ -153,36 +169,6 @@ public class LoginActivity extends AppCompatActivity {
                 }
                     break;
         }
-    }
-
-
-    class ContactUser extends AsyncTask <String, Void, String>{
-        @Override
-        protected String doInBackground(String... strings) {
-            String json_url = "http://13.125.147.26/phps/userContact?hp=" + hp;
-
-            try {
-                URL url = new URL(json_url);
-                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
-                httpURLConnection.disconnect();
-
-            } catch (MalformedURLException e1) {
-                e1.printStackTrace();
-            } catch (IOException e1) {
-                e1.printStackTrace();
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            try {
-                Log.v("ContactUser", "success");
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-
     }
 
     class JsonExpertPage extends AsyncTask <String, Void, String>{
@@ -251,20 +237,27 @@ public class LoginActivity extends AppCompatActivity {
                             editor.clear();
                             editor.commit();
                         }
+
+                        Handler handler = new Handler();
+                        handler.postDelayed(new Runnable(){
+                            public void run(){
+                                dialog.dismiss();
+                            }
+                        }, 500);
                         LoginActivity.this.startActivity(intent);
                         finish();
                     }
                     else if(results == "false"){
-                        if (error == "") {
+                        if (error.contains("처음")) {
                             AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
-                            dialog = builder.setMessage("아이디 혹은 비밀번호가 틀렸습니다.")
+                            dialog = builder.setMessage(error)
                                     .setPositiveButton("다시시도", null)
                                     .create();
                             dialog.show();
                         }
-                        else if (error.contains("처음")) {
+                        else {
                             AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
-                            dialog = builder.setMessage(error)
+                            dialog = builder.setMessage("아이디 혹은 비밀번호가 틀렸습니다.")
                                     .setPositiveButton("다시시도", null)
                                     .create();
                             dialog.show();

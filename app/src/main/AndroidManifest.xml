@@ -4,7 +4,7 @@
 
     <!-- 인터넷 퍼미션을 추가해줘야 인터넷에 접속 가능 -->
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" android:required="false"/>
 
     <application
         android:allowBackup="true"

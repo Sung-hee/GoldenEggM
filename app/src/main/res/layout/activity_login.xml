@@ -33,9 +33,9 @@
                 android:layout_height="40sp"
                 android:gravity="center_horizontal"
                 android:layout_marginTop="20sp"
-                android:text="MBN 황금알클럽 회원이신가요?"
+                android:text="MBN 골드 황금알클럽 회원이신가요?"
                 android:textColor="#272727"
-                android:textSize="25sp" />
+                android:textSize="20sp" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -73,6 +73,7 @@
             </LinearLayout>
 
             <EditText
+                android:inputType="text"
                 android:layout_width="320sp"
                 android:layout_height="wrap_content"
                 android:hint="필명"

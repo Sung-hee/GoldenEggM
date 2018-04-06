@@ -6,8 +6,8 @@ android {
         applicationId "com.goldeggm.user.goldeggm"
         minSdkVersion 15
         targetSdkVersion 26
-        versionCode 6
-        versionName "6.0"
+        versionCode 13
+        versionName "13"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {

@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -59,30 +60,6 @@ public class RegisterActivity extends AppCompatActivity {
                 userHp = getIntent().getStringExtra("userHp");
 
                 new JsonExpertPage().execute();
-
-                if (success == "true") {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(RegisterActivity.this);
-                    dialog = builder.setMessage("로그인에 성공했습니다.")
-                            .create();
-                    dialog.show();
-
-                    Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
-                    intent.putExtra("userId", userId);
-                    intent.putExtra("userPwd", userPwd);
-                    intent.putExtra("userConfirmPwd", userConfirmPwd);
-                    intent.putExtra("userPhone", userPhone);
-                    intent.putExtra("userEmail", userEmail);
-                    intent.putExtra("userHp", userHp);
-
-                    RegisterActivity.this.startActivity(intent);
-
-                } else if (success == "false") {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(RegisterActivity.this);
-                    dialog = builder.setMessage(error)
-                            .setPositiveButton("다시시도", null)
-                            .create();
-                    dialog.show();
-                }
             }
         });
     }
@@ -127,6 +104,36 @@ public class RegisterActivity extends AppCompatActivity {
                     jsonObject = jsonArray.getJSONObject(i);
                     success = jsonObject.getString("result");
                     error = jsonObject.getString("error");
+                }
+
+                if (success == "true") {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(RegisterActivity.this);
+                    dialog = builder.setMessage("로그인에 성공했습니다.")
+                            .create();
+                    dialog.show();
+
+                    Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
+                    intent.putExtra("userId", userId);
+                    intent.putExtra("userPwd", userPwd);
+                    intent.putExtra("userConfirmPwd", userConfirmPwd);
+                    intent.putExtra("userPhone", userPhone);
+                    intent.putExtra("userEmail", userEmail);
+                    intent.putExtra("userHp", userHp);
+
+                    Handler handler = new Handler();
+                    handler.postDelayed(new Runnable(){
+                        public void run(){
+                            dialog.dismiss();
+                        }
+                    }, 500);
+                    RegisterActivity.this.startActivity(intent);
+
+                } else if (success == "false") {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(RegisterActivity.this);
+                    dialog = builder.setMessage(error)
+                            .setPositiveButton("다시시도", null)
+                            .create();
+                    dialog.show();
                 }
             } catch (JSONException e) {
                 e.printStackTrace();

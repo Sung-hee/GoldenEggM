@@ -16,7 +16,7 @@ public class MainActivity extends AppCompatActivity {
     boolean doubleBackToExitPressedOnce = false;
 
     private WebView mWebView;
-    private String myUrl = "http://13.125.213.27:3030/users/sign_in"; // 접속 URL (내장HTML의 경우 왼쪽과 같이 쓰고 아니면 걍 URL
+    private String myUrl = "http://13.125.213.27:3000/users/sign_in"; // 접속 URL (내장HTML의 경우 왼쪽과 같이 쓰고 아니면 걍 URL
 
     @Override
     public void onBackPressed() {
