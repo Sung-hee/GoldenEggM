@@ -4,20 +4,24 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/main_layout"
     tools:context="com.goldeggm.user.goldeggm.MainActivity">
 
 
         <Button
-            android:id="@+id/button"
+            android:id="@+id/logoutButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="로그아웃" />
+            android:background="@drawable/button_shape"
+            android:scaleY="0.7"
+            android:scaleX="0.7"
+            android:text="로그아웃"/>
 
-        <WebView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/webView">
+    <WebView
+        android:id="@+id/webView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-        </WebView>
+    </WebView>
 
 </RelativeLayout>

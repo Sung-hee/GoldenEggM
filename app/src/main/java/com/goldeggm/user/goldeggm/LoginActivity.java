@@ -190,7 +190,7 @@ public class LoginActivity extends AppCompatActivity {
                     idText.setText("");
                     idText.setHint("아이디");
                 }
-                    break;
+                break;
         }
     }
 
