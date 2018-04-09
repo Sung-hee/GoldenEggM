@@ -58,6 +58,7 @@ public class LoginActivity extends AppCompatActivity {
     private Button existingMemberYButton, existingMemberNButton;
     private Button registerButton, loginButton;
     private CheckBox autoLogin;
+    boolean doubleBackToExitPressedOnce = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -150,6 +151,28 @@ public class LoginActivity extends AppCompatActivity {
                 }
             });
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (doubleBackToExitPressedOnce) {
+            super.onBackPressed();
+//            finish();
+            return;
+        }
+        else {
+            this.doubleBackToExitPressedOnce = true;
+            Toast.makeText(this, "뒤로 버튼을 한번 더 누르시면 종료됩니다.", Toast.LENGTH_SHORT).show();
+
+            new Handler().postDelayed(new Runnable() {
+
+                @Override
+                public void run() {
+                    doubleBackToExitPressedOnce=false;
+                }
+            }, 2000);
+        }
+//        super.onBackPressed();
     }
 
     public void onRadioButtonClicked(View view) {
