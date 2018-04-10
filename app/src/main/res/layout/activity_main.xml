@@ -7,15 +7,14 @@
     android:id="@+id/main_layout"
     tools:context="com.goldeggm.user.goldeggm.MainActivity">
 
-
-        <Button
-            android:id="@+id/logoutButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/button_shape"
-            android:scaleY="0.7"
-            android:scaleX="0.7"
-            android:text="로그아웃"/>
+    <Button
+        android:id="@+id/logoutButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/button_shape"
+        android:scaleY="0.7"
+        android:scaleX="0.7"
+        android:text="로그아웃"/>
 
     <WebView
         android:id="@+id/webView"

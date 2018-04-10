@@ -19,6 +19,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
@@ -62,8 +63,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_main);
+//        setContentView(R.layout.activity_main);
         final Intent intent = getIntent();
+        RelativeLayout relativeLayout = (RelativeLayout) findViewById(R.id.main_layout);
 
         String userId = intent.getStringExtra("userId");
         String userPwd = intent.getStringExtra("userPwd");
@@ -73,8 +75,14 @@ public class MainActivity extends AppCompatActivity {
         mWebView = (WebView) findViewById(R.id.webView);
         mWebView.getSettings().setJavaScriptEnabled(true);
         logoutButton = (Button) findViewById(R.id.logoutButton);
+        Button button = new Button(this);
 
         mWebView.loadUrl(myUrl + "?id=" + userId + "&pwd=" + userPwd + "&hp=" + userHp); // 접속 URL
+        button.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
+        button.setText("까꿍");
+
+        relativeLayout.addView(button);
+        setContentView(relativeLayout);
 
         mWebView.setWebChromeClient(new WebChromeClient());
         mWebView.setWebViewClient(new WebViewClientClass());
