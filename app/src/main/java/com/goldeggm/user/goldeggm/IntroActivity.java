@@ -27,6 +27,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.UUID;
 
 public class IntroActivity extends AppCompatActivity {
 
@@ -49,22 +50,26 @@ public class IntroActivity extends AppCompatActivity {
         @Override
         public void run() {
 
-            TelephonyManager tm = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
+            intent = new Intent(IntroActivity.this, LoginActivity.class);
 
+            TelephonyManager telephonyManager = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
             if (ActivityCompat.checkSelfPermission(IntroActivity.this, Manifest.permission.READ_SMS) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(IntroActivity.this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(IntroActivity.this, new String[]{Manifest.permission.READ_PHONE_STATE}, 1);
                 return;
             }
+            @SuppressLint("HardwareIds") String tmSerial = telephonyManager != null ? telephonyManager.getSimSerialNumber() : null;
+            @SuppressLint("HardwareIds") String tmDeviceId = telephonyManager != null ? telephonyManager.getDeviceId() : null;
+            @SuppressLint("HardwareIds") String androidId = android.provider.Settings.Secure.getString(getContentResolver(), android.provider.Settings.Secure.ANDROID_ID);
+            if (tmSerial  == null) tmSerial   = "1";
+            if (tmDeviceId== null) tmDeviceId = "1";
+            if (androidId == null) androidId  = "1";
+            UUID deviceUuid = new UUID(androidId.hashCode(), ((long)tmDeviceId.hashCode() << 32) | tmSerial.hashCode());
+            String uniqueId = (telephonyManager != null ? telephonyManager.getLine1Number() : null) + deviceUuid.toString();
 
-            intent = new Intent(IntroActivity.this, LoginActivity.class);
-
-            if (tm != null) {
-                hp = tm.getLine1Number() + tm.getDeviceId();
-                intent.putExtra("userHp", hp);
-            }
+            hp = uniqueId;
+            intent.putExtra("userHp", hp);
 
             new ContactUser().execute();
-
         }
     };
 
@@ -92,8 +97,6 @@ public class IntroActivity extends AppCompatActivity {
         // 화면을 벗어나면, handler 에 예약해놓은 작업을 취소하자
         handler.removeCallbacks(r); // 예약 취소
     }
-
-
 
     class ContactUser extends AsyncTask<String, Void, String> {
         @Override
